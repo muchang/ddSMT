@@ -146,6 +146,8 @@ def _test ():
     res_cmp_cc = True
     (exit_code, out, err) = _run(g_args.cmd)
     res_cmp = exit_code == g_golden_exit
+    if res_cmp and g_args.cmd_cc:
+        (exit_code_cc, out_cc, err_cc) = _run(g_args.cmd_cc)
     if g_args.match_out:
         if g_args.match_err:
             res_cmp = res_cmp and \
@@ -154,7 +156,8 @@ def _test ():
         else:
             res_cmp = res_cmp and \
                 (g_golden_err == err.decode()
-                 and g_args.match_out in out.decode())
+                 and g_args.match_out in out.decode() 
+                 and (g_args.match_out_cc not in out.decode() or g_args.match_out not in out_cc.decode()))
     elif g_args.match_err:
         res_cmp = res_cmp and \
             (g_args.match_err in err.decode()
@@ -165,7 +168,7 @@ def _test ():
              and g_golden_out == out.decode())
 
     if res_cmp and g_args.cmd_cc:
-        (exit_code_cc, out_cc, err_cc) = _run(g_args.cmd_cc)
+        #(exit_code_cc, out_cc, err_cc) = _run(g_args.cmd_cc)
         res_cmp_cc = exit_code_cc == g_golden_exit_cc
         if g_args.match_out_cc:
             if g_args.match_err_cc:
@@ -175,7 +178,8 @@ def _test ():
             else:
                 res_cmp_cc = res_cmp_cc and \
                     (g_golden_err_cc == err_cc.decode()
-                     and g_args.match_out_cc in out_cc.decode())
+                     and g_args.match_out_cc in out_cc.decode()
+                     and (g_args.match_out_cc not in out.decode() or g_args.match_out not in out_cc.decode()))
         elif g_args.match_err_cc:
             res_cmp_cc = res_cmp_cc and \
                 (g_args.match_err_cc in err_cc.decode()
